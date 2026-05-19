@@ -1,7 +1,11 @@
 import { useForm, useWatch } from 'react-hook-form';
 import { useLoaderData } from 'react-router';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import useAuth from '../../hooks/useAuth';
 
 const SendParcel = () => {
+  const {user} = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -10,9 +14,11 @@ const SendParcel = () => {
   } = useForm({
     defaultValues: {
       documentType: 'Document',
+      senderEmail: user?.email || '',
     },
   });
 
+  const axiosSecure = useAxiosSecure();
   const serviceCenters = useLoaderData();
 
 
@@ -54,6 +60,7 @@ const SendParcel = () => {
     console.log('Form Data Submitted:', finalData);
     console.log("The cost is: ", deliveryCharge);
     // Add your API call here
+    axiosSecure.post('/parcels',finalData).then(res=>console.log("after saving parcel: ", res.data))
   };
 
 
@@ -128,6 +135,7 @@ const SendParcel = () => {
                   <input
                     type="text"
                     placeholder="Sender Name"
+                    defaultValue={user?.displayName}
                     {...register('senderName', { required: true })}
                     className={inputClass}
                   />
@@ -138,6 +146,16 @@ const SendParcel = () => {
                     type="tel"
                     placeholder="Sender Phone No"
                     {...register('senderPhone', { required: true })}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Sender Email</label>
+                  <input
+                    type="email"
+                    defaultValue={user?.email}
+                    placeholder="Sender Email"
+                    {...register('senderEmail')}
                     className={inputClass}
                   />
                 </div>
@@ -206,6 +224,15 @@ const SendParcel = () => {
                     type="tel"
                     placeholder="Receiver Contact No"
                     {...register('receiverPhone', { required: true })}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Receiver Email</label>
+                  <input
+                    type="email"
+                    placeholder="Receiver Email"
+                    {...register('receiverEmail')}
                     className={inputClass}
                   />
                 </div>

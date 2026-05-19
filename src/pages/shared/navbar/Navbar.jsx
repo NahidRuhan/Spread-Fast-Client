@@ -15,6 +15,11 @@ const Navbar = () => {
         <li><NavLink to="/about-us" className={navLinkClass}>About Us</NavLink></li>
         <li><NavLink to="/send-parcel" className={navLinkClass}>Send Parcel</NavLink></li>
         <li><NavLink to="/rider" className={navLinkClass}>Be a rider</NavLink></li>
+        {
+          user && <>
+        <li><NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink></li>
+        </>
+        }
     </>
 
     const handleLogout = () => {
