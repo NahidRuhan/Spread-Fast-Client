@@ -11,6 +11,9 @@ import SendParcel from "../pages/send-parcel/SendParcel";
 import AboutUs from "../pages/about-us/about-us/AboutUs";
 import DashboardLayout from "../layouts/DashboardLayout";
 import MyParcels from "../pages/dashboard/my-parcels/MyParcels";
+import Payment from "../pages/dashboard/payment/Payment";
+import PaymentSuccess from "../pages/dashboard/payment/PaymentSuccess";
+import PaymentCancelled from "../pages/dashboard/payment/PaymentCancelled";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +65,18 @@ export const router = createBrowserRouter([
       {
         index:true,
         Component: MyParcels
+      },
+      {
+        path: 'payment/:parcelId',
+        Component: Payment
+      },
+      {
+        path: 'payment-success',
+        Component: PaymentSuccess
+      },
+      {
+        path: 'payment-cancelled',
+        Component: PaymentCancelled
       }
     ]
   },

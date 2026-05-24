@@ -17,7 +17,7 @@ import Logo from '../logo/Logo';
 // 1. Define NavItem OUTSIDE the main component
 const NavItem = ({ to, icon: Icon, label }) => {
   const location = useLocation();
-  const isActive = location.pathname === to; // NavItem now checks its own active state
+  const isActive = location.pathname === to || location.pathname.startsWith(`${to}/`);
 
   return (
     <li>

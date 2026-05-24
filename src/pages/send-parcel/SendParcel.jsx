@@ -1,10 +1,13 @@
 import { useForm, useWatch } from 'react-hook-form';
 import { useLoaderData } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import useAuth from '../../hooks/useAuth';
+import Swal from 'sweetalert2';
 
 const SendParcel = () => {
   const {user} = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -60,7 +63,47 @@ const SendParcel = () => {
     console.log('Form Data Submitted:', finalData);
     console.log("The cost is: ", deliveryCharge);
     // Add your API call here
-    axiosSecure.post('/parcels',finalData).then(res=>console.log("after saving parcel: ", res.data))
+    axiosSecure.post('/parcels', finalData)
+      .then(res => {
+        console.log("after saving parcel: ", res.data);
+        if (res.data.insertedId) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Your parcel has been booked successfully.',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Proceed to Payment',
+            cancelButtonText: 'Pay Later'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate(`/dashboard/payment/${res.data.insertedId}`);
+            }
+          });
+        }
+      })
+      .catch(error => {
+        console.error("Error saving parcel: ", error);
+        Swal.fire({
+          title: 'Error!',
+          text: 'Something went wrong while booking your parcel.',
+          icon: 'error',
+          confirmButtonText: 'Try Again'
+        });
+      });
+
+    // Old method 
+
+    //     fetch('http://localhost:8000/parcels', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(finalData),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => console.log("after saving parcel: ", data))
+    //   .catch((error) => console.error("Error saving parcel: ", error));
+    
   };
 
 
