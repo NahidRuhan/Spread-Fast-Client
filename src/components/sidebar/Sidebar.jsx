@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
-  Package, 
+  CreditCard, 
   FileText, 
   Store, 
   Tag, 
@@ -58,7 +58,7 @@ const Sidebar = ({ onClose }) => {
           </p>
           <ul className="space-y-1">
             <NavItem to="/dashboard" icon={LayoutDashboard} label="Dashboard" />
-            <NavItem to="/deliveries" icon={Package} label="Deliveries" />
+            <NavItem to="/payment-history" icon={CreditCard} label="Payments" />
             <NavItem to="/invoices" icon={FileText} label="Invoices" />
             <NavItem to="/stores" icon={Store} label="Stores" />
             <NavItem to="/pricing" icon={Tag} label="Pricing Plan" />

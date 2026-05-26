@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
 import SocialLogin from "../../shared/socialLogin/SocialLogin";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const { register, handleSubmit, getValues, formState: { errors } } = useForm();
@@ -14,7 +15,16 @@ const Login = () => {
   const handleLogin = (data) => {
     console.log("Login Data:", data);
     signInUser(data.email, data.password)
-      .then(() => navigate(location?.state || '/'))
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          text: "Welcome back!",
+          timer: 1500,
+          showConfirmButton: false
+        });
+        navigate(location?.state || '/');
+      })
       .catch(error => {
         console.log(error);
         setLoading(false);
@@ -93,7 +103,7 @@ const Login = () => {
             Login
           </button>
           <p className="mt-3 text-center text-sm text-gray-600">
-            Don't have an account? <Link state={location?.pathname} to="/register" className="text-blue-600 hover:text-blue-700 hover:underline font-medium">Register</Link>
+            Don't have an account? <Link state={location?.state} to="/register" className="text-blue-600 hover:text-blue-700 hover:underline font-medium">Register</Link>
           </p>
         </div>
       </form>

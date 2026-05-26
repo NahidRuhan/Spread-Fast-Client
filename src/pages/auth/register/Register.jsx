@@ -5,10 +5,13 @@ import useAuth from "../../../hooks/useAuth";
 import SocialLogin from "../../shared/socialLogin/SocialLogin";
 import uploadIcon from "../../../assets/image-upload-icon.png"; // Note: update extension to .svg or .jpg if needed
 import axios from "axios";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const Register = () => {
   const { register, handleSubmit, control, formState: { errors } } = useForm();
   const [showPassword, setShowPassword] = useState(false);
+  const axiosSecure = useAxiosSecure()
 
   const { registerUser, updateUserProfile } = useAuth()
   const location = useLocation()
@@ -38,6 +41,23 @@ const Register = () => {
         const userRes = await registerUser(data.email, data.password);
         await updateUserProfile(data.name, photoURL);
         console.log("User registered and profile updated!", userRes.user);
+        
+        // 3. Save user info to the database
+        const userInfo = {
+          name: data.name,
+          email: data.email,
+          image: photoURL
+        };
+        await axiosSecure.post("/users", userInfo);
+
+        Swal.fire({
+          icon: "success",
+          title: "Registration Successful",
+          text: "Your account has been created successfully.",
+          timer: 1500,
+          showConfirmButton: false
+        });
+
         navigate(location?.state || '/');
       }
     } catch (error) {
@@ -153,7 +173,7 @@ const Register = () => {
           <p className="mt-3 text-center text-sm text-gray-600">
             Already have an account?{" "}
             <Link
-              state={location?.pathname}
+              state={location?.state}
               to="/login"
               className="text-blue-600 hover:text-blue-700 hover:underline font-medium"
             >
