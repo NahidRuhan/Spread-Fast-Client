@@ -2,9 +2,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   CreditCard, 
-  FileText, 
   Store, 
-  Tag, 
+  Tag,
+  Bike,
   Map, 
   Settings, 
   KeyRound, 
@@ -59,7 +59,7 @@ const Sidebar = ({ onClose }) => {
           <ul className="space-y-1">
             <NavItem to="/dashboard" icon={LayoutDashboard} label="Dashboard" />
             <NavItem to="/payment-history" icon={CreditCard} label="Payments" />
-            <NavItem to="/invoices" icon={FileText} label="Invoices" />
+            <NavItem to="/rider-dashboard" icon={Bike} label="Riders" />
             <NavItem to="/stores" icon={Store} label="Stores" />
             <NavItem to="/pricing" icon={Tag} label="Pricing Plan" />
             <NavItem to="/coverage" icon={Map} label="Coverage Area" />
