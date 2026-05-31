@@ -18,7 +18,6 @@ const Login = () => {
   const location = useLocation()
 
   const handleLogin = (data) => {
-    console.log("Login Data:", data);
     signInUser(data.email, data.password)
       .then(() => {
         Swal.fire({

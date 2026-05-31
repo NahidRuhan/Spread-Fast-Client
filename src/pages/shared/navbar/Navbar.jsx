@@ -24,7 +24,7 @@ const Navbar = () => {
       isActive ? "bg-primary text-black font-semibold" : "";
 
     const links = <>
-        <li><NavLink to="/" end className={navLinkClass}>Services</NavLink></li>
+        <li><NavLink to="/" end className={navLinkClass}>Home</NavLink></li>
         <li><NavLink to="/coverage" className={navLinkClass}>Coverage</NavLink></li>
         <li><NavLink to="/about-us" className={navLinkClass}>About Us</NavLink></li>
         <li><NavLink to="/send-parcel" className={navLinkClass}>Send Parcel</NavLink></li>

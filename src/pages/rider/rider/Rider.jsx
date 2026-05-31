@@ -48,7 +48,6 @@ const Rider = () => {
       : [];
 
   const onSubmit = (data) => {
-    console.log("Rider Application Data:", data);
     // Add your API call here
     axiosSecure.post("/riders", data).then(() => {
       Swal.fire("Success", "Rider application submitted successfully!", "success");

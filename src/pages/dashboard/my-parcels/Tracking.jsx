@@ -111,10 +111,10 @@ const Tracking = () => {
         ) : (
           <div className="relative pl-6 md:pl-10 space-y-10">
             {/* Background Line */}
-            <div className="absolute left-10 md:left-[3.25rem] top-4 bottom-4 w-1 bg-gray-100 rounded-full"></div>
+            <div className="absolute left-10 md:left-13 top-4 bottom-4 w-1 bg-gray-100 rounded-full"></div>
             {/* Animated Progress Line */}
             <div 
-              className="absolute left-10 md:left-[3.25rem] top-4 w-1 bg-green-500 rounded-full transition-all duration-700 ease-in-out" 
+              className="absolute left-10 md:left-13 top-4 w-1 bg-green-500 rounded-full transition-all duration-700 ease-in-out" 
               style={{ height: `${(activeIndex / (steps.length - 1)) * 100}%` }}
             ></div>
 

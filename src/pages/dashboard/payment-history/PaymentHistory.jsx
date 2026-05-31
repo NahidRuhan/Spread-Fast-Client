@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import useAuth from "../../../hooks/useAuth"
 import useAxiosSecure from "../../../hooks/useAxiosSecure"
+import { Link } from "react-router-dom"
 
 const PaymentHistory = () => {
   const axiosSecure = useAxiosSecure()
@@ -43,7 +44,11 @@ const PaymentHistory = () => {
                     {payment.amount} <span className="uppercase">{payment.currency}</span>
                   </td>
                   <td className="p-4 font-mono text-xs text-gray-500">{payment.transactionId}</td>
-                  <td className="p-4 font-mono text-xs font-bold text-blue-600">{payment.trackingId}</td>
+                  <td className="p-4 font-mono text-xs font-bold text-blue-600">
+                    <Link to={`/dashboard/tracking/${payment.parcelId}`} className="hover:text-blue-800 hover:underline">
+                      {payment.trackingId}
+                    </Link>
+                  </td>
                   <td className="p-4 text-gray-600">{new Date(payment.paid_at).toLocaleDateString()}</td>
                   <td className="p-4 text-center">
                     <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold inline-block capitalize">

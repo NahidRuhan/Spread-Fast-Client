@@ -17,7 +17,6 @@ const MyParcels = () => {
             return res.data
         }
     })
-    console.log("Used tanstack: ",parcels)
 
     const handleDelete = (id) => {
         Swal.fire({

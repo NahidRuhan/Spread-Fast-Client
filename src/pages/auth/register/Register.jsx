@@ -43,9 +43,8 @@ const Register = () => {
       }
       
       // 2. Register user & update profile in Firebase
-      const userRes = await registerUser(data.email, data.password);
+      await registerUser(data.email, data.password);
       await updateUserProfile(data.name, photoURL);
-      console.log("User registered and profile updated!", userRes.user);
       
       // 3. Save user info to the database
       const userInfo = {

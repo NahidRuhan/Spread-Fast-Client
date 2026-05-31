@@ -97,14 +97,10 @@ const SendParcel = () => {
     } else {
       finalData.sameCity = true;
     }
-
-    console.log("Form Data Submitted:", finalData);
-    console.log("The cost is: ", deliveryCharge);
     // Add your API call here
     axiosSecure
       .post("/parcels", finalData)
       .then((res) => {
-        console.log("after saving parcel: ", res.data);
         if (res.data.insertedId) {
           Swal.fire({
             title: "Success!",
