@@ -26,7 +26,7 @@ const PendingParcel = () => {
       const res = await axiosSecure.get(`/pending-parcel/${user?.email}`);
       return res.data;
     },
-    enabled: !!user?.email,
+    enabled: !!user?.email && riderInfo?.workStatus !== 'unavailable',
   });
 
   // Fetch the parcels this rider has already accepted
@@ -135,7 +135,13 @@ const PendingParcel = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {parcels.length > 0 ? (
+              {riderInfo?.workStatus === 'unavailable' ? (
+                <tr>
+                  <td colSpan="8" className="p-12 text-center text-gray-500 font-medium">
+                    You are currently offline. Please toggle your work status to available to receive new delivery requests.
+                  </td>
+                </tr>
+              ) : parcels.length > 0 ? (
                 parcels.map((parcel, index) => {
                   let pickupTitle = parcel.senderName;
                   let pickupDesc = parcel.senderDistrict;
