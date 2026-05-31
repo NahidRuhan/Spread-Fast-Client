@@ -21,11 +21,14 @@ import AdminRoute from "./AdminRoute";
 import AllParcels from "../pages/dashboard/all-parcel/AllParcels";
 import RiderRoute from "./RiderRoute";
 import PendingParcel from "../pages/dashboard/pending-parcel/PendingParcel";
+import Tracking from "../pages/dashboard/my-parcels/Tracking";
+import ErrorPage from "../components/error/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: RootLayout,
+    errorElement: <ErrorPage />,
     children: [
         {
           index: true,
@@ -55,6 +58,7 @@ export const router = createBrowserRouter([
   {
     path: '/',
     Component: AuthLayout,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: 'login',
@@ -69,6 +73,7 @@ export const router = createBrowserRouter([
   {
     path: 'dashboard',
     element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    errorElement: <ErrorPage />,
     children: [
       {
         index:true,
@@ -85,12 +90,17 @@ export const router = createBrowserRouter([
       {
         path: 'payment-cancelled',
         Component: PaymentCancelled
+      },
+      {
+        path: 'tracking/:id',
+        Component: Tracking
       }
     ]
   },
   {
     path: 'payment-history',
     element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    errorElement: <ErrorPage />,
     children: [
       {
         index:true,
@@ -101,6 +111,7 @@ export const router = createBrowserRouter([
   {
     path: 'rider-dashboard',
     element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    errorElement: <ErrorPage />,
     children: [
       {
         index:true,
@@ -111,6 +122,7 @@ export const router = createBrowserRouter([
   {
     path: 'manage-user',
     element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    errorElement: <ErrorPage />,
     children: [
       {
         index:true,
@@ -121,6 +133,7 @@ export const router = createBrowserRouter([
   {
     path: 'all-parcels',
     element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    errorElement: <ErrorPage />,
     children: [
       {
         index:true,
@@ -131,11 +144,16 @@ export const router = createBrowserRouter([
   {
     path: 'pending-parcels',
     element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    errorElement: <ErrorPage />,
     children: [
       {
         index:true,
         element: <RiderRoute><PendingParcel></PendingParcel></RiderRoute>
       },
     ]
+  },
+  {
+    path: "*",
+    Component: ErrorPage
   }
 ]);

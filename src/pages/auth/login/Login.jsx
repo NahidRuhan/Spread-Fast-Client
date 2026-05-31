@@ -6,7 +6,12 @@ import SocialLogin from "../../shared/socialLogin/SocialLogin";
 import Swal from "sweetalert2";
 
 const Login = () => {
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm();
+  const { register, handleSubmit, getValues, formState: { errors } } = useForm({
+    defaultValues: {
+      email: "admin@account.com",
+      password: "adminAccount"
+    }
+  });
   const [showPassword, setShowPassword] = useState(false);
   const { signInUser, resetPassword, setLoading } = useAuth();
   const navigate = useNavigate()

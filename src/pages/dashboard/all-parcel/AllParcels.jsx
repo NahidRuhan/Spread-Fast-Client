@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 const AllParcels = () => {
   const axiosSecure = useAxiosSecure();
@@ -94,9 +95,15 @@ const AllParcels = () => {
                           {parcel.parcelName}
                         </span>
                         <br />
-                        <span className="text-xs text-gray-400 font-normal tracking-wide">
-                          Tracking: {parcel.trackingId || "N/A"}
-                        </span>
+                        {parcel.trackingId ? (
+                          <Link to={`/dashboard/tracking/${parcel._id}`} onClick={(e) => e.stopPropagation()} className="text-xs text-blue-500 hover:text-blue-700 hover:underline font-semibold tracking-wide inline-block mt-1">
+                            Track: {parcel.trackingId}
+                          </Link>
+                        ) : (
+                          <span className="text-xs text-gray-400 font-normal tracking-wide inline-block mt-1">
+                            Tracking: N/A
+                          </span>
+                        )}
                       </td>
                       <td className="p-4 text-gray-600">
                         <p className="font-semibold text-[#0A2533] capitalize">{parcel.receive_warehouse || parcel.senderDistrict}</p>
@@ -179,9 +186,9 @@ const AllParcels = () => {
                         {parcel.trackingId && (
                           <>
                             <br />
-                            <span className="text-xs text-gray-400 font-normal tracking-wide">
-                              Tracking: {parcel.trackingId}
-                            </span>
+                            <Link to={`/dashboard/tracking/${parcel._id}`} onClick={(e) => e.stopPropagation()} className="text-xs text-blue-500 hover:text-blue-700 hover:underline font-semibold tracking-wide inline-block mt-1">
+                              Track: {parcel.trackingId}
+                            </Link>
                           </>
                         )}
                       </td>

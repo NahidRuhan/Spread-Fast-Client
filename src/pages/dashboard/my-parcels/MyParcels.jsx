@@ -97,7 +97,9 @@ const MyParcels = () => {
                     {parcel.trackingId && (
                       <>
                         <br />
-                        <span className="text-xs text-gray-400 font-normal tracking-wide">Tracking ID: {parcel.trackingId}</span>
+                        <Link to={`/dashboard/tracking/${parcel._id}`} onClick={(e) => e.stopPropagation()} className="text-xs text-blue-500 hover:text-blue-700 hover:underline font-semibold tracking-wide inline-block mt-1">
+                          Track: {parcel.trackingId}
+                        </Link>
                       </>
                     )}
                   </td>
