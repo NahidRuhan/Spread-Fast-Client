@@ -19,6 +19,8 @@ import RiderDashboard from "../pages/dashboard/rider/RiderDashboard";
 import UserManage from "../pages/dashboard/user-management/UserManage";
 import AdminRoute from "./AdminRoute";
 import AllParcels from "../pages/dashboard/all-parcel/AllParcels";
+import RiderRoute from "./RiderRoute";
+import PendingParcel from "../pages/dashboard/pending-parcel/PendingParcel";
 
 export const router = createBrowserRouter([
   {
@@ -123,6 +125,16 @@ export const router = createBrowserRouter([
       {
         index:true,
         element: <AdminRoute><AllParcels></AllParcels></AdminRoute>
+      },
+    ]
+  },
+  {
+    path: 'pending-parcels',
+    element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    children: [
+      {
+        index:true,
+        element: <RiderRoute><PendingParcel></PendingParcel></RiderRoute>
       },
     ]
   }

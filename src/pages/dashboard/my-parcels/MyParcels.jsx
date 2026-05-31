@@ -104,10 +104,10 @@ const MyParcels = () => {
                   <td className="p-4 text-gray-600 text-center">{parcel.receiverDistrict}, {parcel.receiverRegion}</td>
                   <td className="p-4 font-semibold text-green-600 text-center">৳ {parcel.deliveryCharge}</td>
                   <td className="p-4 text-center">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold inline-block ${
-                      parcel.status === 'Delivered' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold inline-block capitalize ${
+                      parcel.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
                     }`}>
-                      {parcel.status || 'Pending'}
+                      {parcel.status || 'pending'}
                     </span>
                   </td>
                   <td className="p-4 text-center">

@@ -2,11 +2,23 @@ import { NavLink, useNavigate } from "react-router"
 import Logo from "../../../components/logo/Logo"
 import useAuth from "../../../hooks/useAuth"
 import useRole from "../../../hooks/useRole"
+import { useQuery } from "@tanstack/react-query"
+import useAxiosSecure from "../../../hooks/useAxiosSecure"
 
 const Navbar = () => {
   const navigate = useNavigate()
   const { user,signOutUser } = useAuth()
   const { role } = useRole()
+  const axiosSecure = useAxiosSecure()
+
+  const { data: riderInfo, refetch } = useQuery({
+    queryKey: ['riderInfo', user?.email],
+    enabled: !!user?.email && role === 'rider',
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/rider/${user?.email}`);
+      return res.data;
+    }
+  });
 
     const navLinkClass = ({ isActive }) => 
       isActive ? "bg-primary text-black font-semibold" : "";
@@ -28,6 +40,16 @@ const Navbar = () => {
       signOutUser()
       .then()
       .catch(error=>console.log(error))
+    }
+
+    const handleWorkStatusToggle = async () => {
+      const newStatus = riderInfo?.workStatus === 'available' ? 'unavailable' : 'available';
+      try {
+        await axiosSecure.patch(`/rider/work-status/${user?.email}`, { workStatus: newStatus });
+        refetch();
+      } catch (error) {
+        console.error("Failed to update work status", error);
+      }
     }
 
   return (
@@ -73,6 +95,19 @@ const Navbar = () => {
               <p className="text-xs text-gray-500 capitalize">{role}</p>
             </div>
             <li><button onClick={() => navigate('/dashboard')} className="hover:bg-gray-50 font-medium text-gray-700">Dashboard</button></li>
+            {role === 'rider' && (
+              <li>
+                <label className="flex items-center justify-between hover:bg-gray-50 font-medium text-gray-700 w-full cursor-pointer">
+                  <span>Work Status</span>
+                  <input 
+                    type="checkbox" 
+                    className="toggle toggle-success toggle-sm" 
+                    checked={riderInfo?.workStatus === 'available'}
+                    onChange={handleWorkStatusToggle}
+                  />
+                </label>
+              </li>
+            )}
             <li><button onClick={handleLogout} className="text-red-500 hover:bg-red-50 font-medium mt-1">Logout</button></li>
           </ul>
         </div>

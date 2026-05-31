@@ -73,6 +73,13 @@ const Sidebar = ({ onClose }) => {
                 <NavItem to="/all-parcels" icon={Package} label="Parcels" />
               </>
             )}
+            {
+              role === "rider" && (
+                <>
+                <NavItem to="/pending-parcels" icon={Package} label="Parcels" />
+                </>
+              )
+            }
 
             <NavItem to="/coverage" icon={Map} label="Coverage Area" />
           </ul>

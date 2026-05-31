@@ -1,19 +1,36 @@
 import { useForm, useWatch } from "react-hook-form";
 import riderImg from "../../../assets/agent-pending.png";
-// import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";
+import Swal from "sweetalert2";
 
 const Rider = () => {
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+
+  const { data: dbUser } = useQuery({
+    queryKey: ["user", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/${user?.email}`);
+      return res.data;
+    },
+    enabled: !!user?.email,
+  });
+
   const {
     register,
     handleSubmit,
     control,
-    // formState: { errors },
-  } = useForm();
+  } = useForm({
+    values: {
+      name: dbUser?.name || user?.displayName || "",
+      email: dbUser?.email || user?.email || "",
+      phone: dbUser?.phone || "",
+    }
+  });
 
-  // const { user } = useAuth();
-  const axiosSecure = useAxiosSecure();
   const serviceCenters = useLoaderData();
   const uniqueRegions = serviceCenters
     ? [...new Set(serviceCenters.map((center) => center.region))]
@@ -25,7 +42,7 @@ const Rider = () => {
           ...new Set(
             serviceCenters
               .filter((c) => c.region === selectedRiderRegion)
-              .map((c) => c.district),
+              .map((c) => c.district)
           ),
         ]
       : [];
@@ -33,13 +50,15 @@ const Rider = () => {
   const onSubmit = (data) => {
     console.log("Rider Application Data:", data);
     // Add your API call here
-    axiosSecure.post('/riders',data)
-    .then(()=>alert("Rider created"))
+    axiosSecure.post("/riders", data).then(() => {
+      Swal.fire("Success", "Rider application submitted successfully!", "success");
+    });
   };
 
   const inputClass =
     "w-full border border-gray-200 rounded-md p-3 text-sm outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors mt-1 placeholder-gray-400";
   const labelClass = "text-sm font-medium text-slate-800 block";
+  const readOnlyClass = "bg-gray-100 text-gray-500 cursor-not-allowed";
 
   return (
     <div className="bg-white rounded-3xl p-8 md:p-16 w-full shadow-sm">
@@ -67,8 +86,9 @@ const Rider = () => {
             <input
               type="text"
               placeholder="Your Name"
+              readOnly
               {...register("name", { required: true })}
-              className={inputClass}
+              className={`${inputClass} ${readOnlyClass}`}
             />
           </div>
 
@@ -87,8 +107,9 @@ const Rider = () => {
             <input
               type="email"
               placeholder="Your Email"
+              readOnly
               {...register("email", { required: true })}
-              className={inputClass}
+              className={`${inputClass} ${readOnlyClass}`}
             />
           </div>
 
@@ -107,19 +128,21 @@ const Rider = () => {
             </select>
           </div>
 
-                <div>
-                  <label className={labelClass}>Your District</label>
-                  <select
-                    {...register('district', { required: true })}
-                    className={`${inputClass} bg-white`}
-                    disabled={!selectedRiderRegion}
-                  >
-                    <option value="">Select your District</option>
-                    {riderDistrict.map((district, index) => (
-                      <option key={index} value={district}>{district}</option>
-                    ))}
-                  </select>
-                </div>
+          <div>
+            <label className={labelClass}>Your District</label>
+            <select
+              {...register("district", { required: true })}
+              className={`${inputClass} bg-white`}
+              disabled={!selectedRiderRegion}
+            >
+              <option value="">Select your District</option>
+              {riderDistrict.map((district, index) => (
+                <option key={index} value={district}>
+                  {district}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div>
             <label className={labelClass}>NID No</label>

@@ -1,34 +1,84 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 
-const AllParcels = () => {
+const PendingParcel = () => {
+  const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const [selectedParcel, setSelectedParcel] = useState(null);
 
-  const { data: parcels = [], isLoading, refetch } = useQuery({
-    queryKey: ["allParcels"],
+  // Fetch rider info strictly for displaying their assigned district in the UI
+  const { data: riderInfo, isLoading: isRiderLoading } = useQuery({
+    queryKey: ["riderInfo", user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get("/parcels");
+      const res = await axiosSecure.get(`/rider/${user?.email}`);
       return res.data;
     },
+    enabled: !!user?.email,
   });
 
-  const hubParcels = parcels.filter(
-    (parcel) =>
-      ["at origin hub", "in transit"].includes((parcel.status || "").toLowerCase())
-  );
+  // Fetch only the filtered parcels from the backend
+  const { data: parcels = [], isLoading: isParcelsLoading, refetch: refetchPending } = useQuery({
+    queryKey: ["pendingParcels", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/pending-parcel/${user?.email}`);
+      return res.data;
+    },
+    enabled: !!user?.email,
+  });
+
+  // Fetch the parcels this rider has already accepted
+  const { data: acceptedParcels = [], isLoading: isAcceptedLoading, refetch: refetchAccepted } = useQuery({
+    queryKey: ["acceptedParcels", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/accepted-parcels/${user?.email}`);
+      return res.data;
+    },
+    enabled: !!user?.email,
+  });
+
+  const isLoading = isRiderLoading || isParcelsLoading || isAcceptedLoading;
+
+  const handleAccept = (id) => {
+    Swal.fire({
+      title: "Accept this delivery?",
+      text: "You will be assigned to pick up and deliver this parcel.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#22c55e",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, accept it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure.patch(`/parcels/accept/${id}`, { riderEmail: user?.email }).then((res) => {
+          if (res.data.modifiedCount > 0) {
+            Swal.fire("Accepted!", "The parcel has been assigned to you.", "success");
+            refetchPending();
+            refetchAccepted();
+          }
+        });
+      }
+    });
+  };
 
   const handleUpdateStatus = (parcel) => {
     const currentStatus = (parcel.status || "").toLowerCase();
 
-    const statusOptionsMap = {
-      "at origin hub": { "in transit": "In Transit", "at destination": "At Destination" },
-      "in transit": { "at destination": "At Destination" }
-    };
+    const statusOptionsMap = parcel.sameCity
+      ? {
+        "assigned": { "picked up": "Picked Up", "cancelled": "Cancelled" },
+        "picked up": { "delivered": "Delivered", "cancelled": "Cancelled" },
+      }
+      : {
+        "assigned": { "picked up": "Picked Up", "cancelled": "Cancelled" },
+        "picked up": { "at origin hub": "At Origin Hub", "cancelled": "Cancelled" },
+        "processing": { "out for delivery": "Out for Delivery", "cancelled": "Cancelled" },
+        "out for delivery": { "delivered": "Delivered", "cancelled": "Cancelled" },
+      };
 
-    const options = statusOptionsMap[currentStatus] || {};
+    const options = statusOptionsMap[currentStatus] || { "cancelled": "Cancelled" };
 
     Swal.fire({
       title: 'Update Parcel Status',
@@ -47,7 +97,7 @@ const AllParcels = () => {
         axiosSecure.patch(`/parcels/status/${parcel._id}`, { status: result.value }).then((res) => {
           if (res.data.modifiedCount > 0) {
             Swal.fire("Updated!", `Status changed to ${result.value}.`, "success");
-            refetch();
+            refetchAccepted();
           }
         });
       }
@@ -56,37 +106,64 @@ const AllParcels = () => {
 
   return (
     <div className="w-full space-y-8 min-h-screen">
-      
-      {/* Parcels at Hub Section */}
+      {/* Available Deliveries Section */}
       <div className="bg-white rounded-3xl p-8 w-full shadow-sm">
         <div className="mb-6 border-b border-gray-100 pb-4">
-          <h2 className="text-2xl font-bold text-[#0A2533] mb-2">Parcels at Hub & In Transit</h2>
-          <p className="text-gray-500 font-medium">Manage parcels moving between origin and destination warehouses.</p>
-        </div>
+          <h1 className="text-2xl font-bold text-[#0A2533] mb-2">Available Deliveries</h1>
+        <p className="text-gray-500 font-medium">
+          Parcels ready for pickup or delivery within your district ({riderInfo?.district || '...'}).
+        </p>
+      </div>
 
-        {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <span className="loading loading-spinner text-green-500 w-12 h-12 border-4 border-t-transparent border-green-500 rounded-full animate-spin"></span>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse whitespace-nowrap">
-              <thead>
-                <tr className="bg-gray-50 text-slate-700 text-sm uppercase tracking-wide">
-                  <th className="p-4 rounded-tl-xl font-semibold w-16">#</th>
-                  <th className="p-4 font-semibold">Parcel Info</th>
-                  <th className="p-4 font-semibold">Origin</th>
-                  <th className="p-4 font-semibold">Destination</th>
-                  <th className="p-4 font-semibold text-center">Status</th>
-                  <th className="p-4 rounded-tr-xl font-semibold text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {hubParcels.length > 0 ? (
-                  hubParcels.map((parcel, index) => (
+      {isLoading ? (
+        <div className="flex justify-center items-center py-20">
+          <span className="loading loading-spinner text-green-500 w-12 h-12 border-4 border-t-transparent border-green-500 rounded-full animate-spin"></span>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse whitespace-nowrap">
+            <thead>
+              <tr className="bg-gray-50 text-slate-700 text-sm uppercase tracking-wide">
+                <th className="p-4 rounded-tl-xl font-semibold w-16">#</th>
+                <th className="p-4 font-semibold">Parcel Info</th>
+                <th className="p-4 font-semibold">Pickup From</th>
+                <th className="p-4 font-semibold">Deliver To</th>
+                <th className="p-4 font-semibold text-center">Delivery Charge</th>
+                <th className="p-4 font-semibold text-center">My Fee</th>
+                <th className="p-4 font-semibold text-center">Status</th>
+                <th className="p-4 rounded-tr-xl font-semibold text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {parcels.length > 0 ? (
+                parcels.map((parcel, index) => {
+                  let pickupTitle = parcel.senderName;
+                  let pickupDesc = parcel.senderDistrict;
+                  let deliverTitle = parcel.receiverName;
+                  let deliverDesc = parcel.receiverDistrict;
+                  
+                  const deliveryCharge = parcel.deliveryCharge || 0;
+                  const myFee = parcel.sameCity === false ? deliveryCharge * 0.35 : deliveryCharge * 0.8;
+
+                  if (parcel.sameCity === false) {
+                    if (riderInfo?.district === parcel.senderDistrict) {
+                      pickupDesc = parcel.senderAddress;
+                      deliverTitle = "Warehouse";
+                      deliverDesc = parcel.receive_warehouse;
+                    } else if (riderInfo?.district === parcel.receiverDistrict) {
+                      pickupTitle = "Warehouse";
+                      pickupDesc = parcel.dispatch_warehouse;
+                      deliverDesc = parcel.receiverAddress;
+                    }
+                  } else {
+                    pickupDesc = parcel.senderAddress || parcel.senderDistrict;
+                    deliverDesc = parcel.receiverAddress || parcel.receiverDistrict;
+                  }
+
+                  return (
                     <tr key={parcel._id} className="hover:bg-gray-50 transition-colors duration-200 text-sm">
                       <td className="p-4 text-gray-500 font-medium">{index + 1}</td>
-                      <td
+                      <td 
                         onClick={() => setSelectedParcel(parcel)}
                         className="p-4 font-medium text-slate-800 cursor-pointer group"
                       >
@@ -94,50 +171,57 @@ const AllParcels = () => {
                           {parcel.parcelName}
                         </span>
                         <br />
-                        <span className="text-xs text-gray-400 font-normal tracking-wide">
-                          Tracking: {parcel.trackingId || "N/A"}
-                        </span>
+                        <span className="text-xs text-gray-400 font-normal tracking-wide">Weight: {parcel.parcelWeight || 0} kg</span>
                       </td>
                       <td className="p-4 text-gray-600">
-                        <p className="font-semibold text-[#0A2533] capitalize">{parcel.receive_warehouse || parcel.senderDistrict}</p>
+                        <p className="font-semibold text-[#0A2533]">{pickupTitle}</p>
+                        <p className="text-xs text-gray-500 truncate max-w-50 capitalize" title={pickupDesc}>{pickupDesc}</p>
                       </td>
                       <td className="p-4 text-gray-600">
-                        <p className="font-semibold text-[#0A2533] capitalize">{parcel.dispatch_warehouse || parcel.receiverDistrict}</p>
+                        <p className="font-semibold text-[#0A2533]">{deliverTitle}</p>
+                        <p className="text-xs text-gray-400 truncate max-w-50 capitalize" title={deliverDesc}>{deliverDesc}</p>
+                      </td>
+                      <td className="p-4 font-semibold text-gray-800 text-center">
+                        ৳ {deliveryCharge}
+                      </td>
+                      <td className="p-4 font-semibold text-green-600 text-center">
+                        ৳ {myFee.toFixed(2)}
                       </td>
                       <td className="p-4 text-center">
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold inline-block bg-purple-100 text-purple-700 capitalize">
-                          {parcel.status}
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold inline-block capitalize ${parcel.status === "at destination" ? "bg-blue-100 text-blue-700" : "bg-yellow-100 text-yellow-700"}`}>
+                          {parcel.status || "pending"}
                         </span>
                       </td>
                       <td className="p-4 text-right">
                         <button 
-                          onClick={() => handleUpdateStatus(parcel)}
-                          className="bg-[#0A2533] hover:bg-gray-800 transition-colors text-white font-semibold py-2 px-5 rounded-lg text-xs shadow-sm cursor-pointer"
+                          onClick={() => handleAccept(parcel._id)}
+                          className="bg-primary hover:bg-green-500 transition-colors text-[#0A2533] font-semibold py-2 px-5 rounded-lg text-xs shadow-sm cursor-pointer"
                         >
-                          Update Status
+                          Accept Request
                         </button>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="6" className="p-12 text-center text-gray-400 font-medium">
-                      No parcels currently at the hub or in transit.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan="8" className="p-12 text-center text-gray-400 font-medium">
+                    No parcels currently available in your district.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
       </div>
 
-      {/* All Parcels Section */}
+      {/* My Accepted Deliveries Section */}
       <div className="bg-white rounded-3xl p-8 w-full shadow-sm">
         <div className="mb-6 border-b border-gray-100 pb-4">
-          <h1 className="text-2xl font-bold text-[#0A2533] mb-2">All Parcels</h1>
+          <h2 className="text-2xl font-bold text-[#0A2533] mb-2">My Accepted Deliveries</h2>
           <p className="text-gray-500 font-medium">
-            View and manage all parcels placed by users across the system.
+            Parcels you are currently assigned to pick up or deliver.
           </p>
         </div>
 
@@ -152,80 +236,95 @@ const AllParcels = () => {
                 <tr className="bg-gray-50 text-slate-700 text-sm uppercase tracking-wide">
                   <th className="p-4 rounded-tl-xl font-semibold w-16">#</th>
                   <th className="p-4 font-semibold">Parcel Info</th>
-                  <th className="p-4 font-semibold">Sender Details</th>
-                  <th className="p-4 font-semibold">Receiver Details</th>
-                  <th className="p-4 font-semibold text-center">Cost</th>
-                  <th className="p-4 rounded-tr-xl font-semibold text-center">Status</th>
+                  <th className="p-4 font-semibold">Pickup From</th>
+                  <th className="p-4 font-semibold">Deliver To</th>
+                  <th className="p-4 font-semibold text-center">Delivery Charge</th>
+                  <th className="p-4 font-semibold text-center">My Fee</th>
+                  <th className="p-4 font-semibold text-center">Status</th>
+                  <th className="p-4 rounded-tr-xl font-semibold text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {parcels.length > 0 ? (
-                  parcels.map((parcel, index) => (
-                    <tr key={parcel._id} className="hover:bg-gray-50 transition-colors duration-200 text-sm">
-                      <td className="p-4 text-gray-500 font-medium">
-                        {index + 1}
-                      </td>
-                      <td
-                        onClick={() => setSelectedParcel(parcel)}
-                        className="p-4 font-medium text-slate-800 cursor-pointer group"
-                      >
-                        <span className="group-hover:text-green-600 transition-colors">
-                          {parcel.parcelName}
-                        </span>
-                        <br />
-                        <span className="text-xs text-gray-400 font-normal tracking-wide">
-                          Type: {parcel.documentType}
-                        </span>
-                        {parcel.trackingId && (
-                          <>
-                            <br />
-                            <span className="text-xs text-gray-400 font-normal tracking-wide">
-                              Tracking: {parcel.trackingId}
-                            </span>
-                          </>
-                        )}
-                      </td>
-                      <td className="p-4 text-gray-600">
-                        <p className="font-semibold text-[#0A2533]">
-                          {parcel.senderName}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {parcel.senderPhone}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {parcel.senderDistrict}
-                        </p>
-                      </td>
-                      <td className="p-4 text-gray-600">
-                        <p className="font-semibold text-[#0A2533]">
-                          {parcel.receiverName}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {parcel.receiverPhone}
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          {parcel.receiverDistrict}
-                        </p>
-                      </td>
-                      <td className="p-4 font-semibold text-green-600 text-center">
-                        ৳ {parcel.deliveryCharge}
-                      </td>
-                      <td className="p-4 text-center">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold inline-block capitalize ${parcel.status === "delivered" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}
+                {acceptedParcels.length > 0 ? (
+                  acceptedParcels.map((parcel, index) => {
+                    let pickupTitle = parcel.senderName;
+                    let pickupDesc = parcel.senderDistrict;
+                    let deliverTitle = parcel.receiverName;
+                    let deliverDesc = parcel.receiverDistrict;
+                    
+                    const deliveryCharge = parcel.deliveryCharge || 0;
+                    const myFee = parcel.sameCity === false ? deliveryCharge * 0.35 : deliveryCharge * 0.8;
+  
+                    if (parcel.sameCity === false) {
+                      if (riderInfo?.district === parcel.senderDistrict) {
+                        pickupDesc = parcel.senderAddress;
+                        deliverTitle = "Warehouse";
+                        deliverDesc = parcel.receive_warehouse;
+                      } else if (riderInfo?.district === parcel.receiverDistrict) {
+                        pickupTitle = "Warehouse";
+                        pickupDesc = parcel.dispatch_warehouse;
+                        deliverDesc = parcel.receiverAddress;
+                      }
+                    } else {
+                      pickupDesc = parcel.senderAddress || parcel.senderDistrict;
+                      deliverDesc = parcel.receiverAddress || parcel.receiverDistrict;
+                    }
+  
+                    return (
+                      <tr key={parcel._id} className="hover:bg-gray-50 transition-colors duration-200 text-sm">
+                        <td className="p-4 text-gray-500 font-medium">{index + 1}</td>
+                        <td 
+                          onClick={() => setSelectedParcel(parcel)}
+                          className="p-4 font-medium text-slate-800 cursor-pointer group"
                         >
-                          {parcel.status || "pending"}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
+                          <span className="group-hover:text-green-600 transition-colors">
+                            {parcel.parcelName}
+                          </span>
+                          <br />
+                          <span className="text-xs text-gray-400 font-normal tracking-wide">Tracking: {parcel.trackingId || 'N/A'}</span>
+                        </td>
+                        <td className="p-4 text-gray-600">
+                          <p className="font-semibold text-[#0A2533]">{pickupTitle}</p>
+                          <p className="text-xs text-gray-500 truncate max-w-50 capitalize" title={pickupDesc}>{pickupDesc}</p>
+                        </td>
+                        <td className="p-4 text-gray-600">
+                          <p className="font-semibold text-[#0A2533]">{deliverTitle}</p>
+                          <p className="text-xs text-gray-400 truncate max-w-50 capitalize" title={deliverDesc}>{deliverDesc}</p>
+                        </td>
+                        <td className="p-4 font-semibold text-gray-800 text-center">
+                          ৳ {deliveryCharge}
+                        </td>
+                        <td className="p-4 font-semibold text-green-600 text-center">
+                          ৳ {myFee.toFixed(2)}
+                        </td>
+                        <td className="p-4 text-center">
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold inline-block capitalize ${
+                            parcel.status === 'delivered' ? 'bg-green-100 text-green-700' :
+                            parcel.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                            'bg-blue-100 text-blue-700'
+                          }`}>
+                          {parcel.status || "assigned"}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          {['delivered', 'cancelled'].includes((parcel.status || '').toLowerCase()) ? (
+                            <span className="text-gray-400 font-semibold text-xs pr-2">Completed</span>
+                          ) : (
+                            <button 
+                              onClick={() => handleUpdateStatus(parcel)}
+                              className="bg-[#0A2533] hover:bg-gray-800 transition-colors text-white font-semibold py-2 px-5 rounded-lg text-xs shadow-sm cursor-pointer"
+                            >
+                              Update Status
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
-                    <td
-                      colSpan="6"
-                      className="p-12 text-center text-gray-400 font-medium"
-                    >
-                      No parcels found in the system.
+                    <td colSpan="8" className="p-12 text-center text-gray-400 font-medium">
+                      You haven't accepted any deliveries yet.
                     </td>
                   </tr>
                 )}
@@ -344,12 +443,6 @@ const AllParcels = () => {
                   </div>
                   <div className="grid grid-cols-1 gap-3">
                     <div>
-                      <p className="text-sm text-gray-500">Email</p>
-                      <p className="font-medium text-gray-800 break-all">
-                        {selectedParcel.senderEmail || "N/A"}
-                      </p>
-                    </div>
-                    <div>
                       <p className="text-sm text-gray-500">Phone</p>
                       <p className="font-medium text-gray-800">
                         {selectedParcel.senderPhone || "N/A"}
@@ -390,12 +483,6 @@ const AllParcels = () => {
                     </p>
                   </div>
                   <div className="grid grid-cols-1 gap-3">
-                    <div>
-                      <p className="text-sm text-gray-500">Email</p>
-                      <p className="font-medium text-gray-800 break-all">
-                        {selectedParcel.receiverEmail || "N/A"}
-                      </p>
-                    </div>
                     <div>
                       <p className="text-sm text-gray-500">Phone</p>
                       <p className="font-medium text-gray-800">
@@ -442,4 +529,4 @@ const AllParcels = () => {
   );
 };
 
-export default AllParcels;
+export default PendingParcel;
