@@ -53,7 +53,7 @@ const Navbar = () => {
     }
 
   return (
-<div className="navbar bg-base-100 rounded-2xl px-7 py-3">
+<div className="navbar bg-base-100 rounded-2xl px-3 md:px-7 py-2 md:py-3">
   <div className="navbar-start">
     <div className="dropdown">
       <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -61,7 +61,7 @@ const Navbar = () => {
       </div>
       <ul
         tabIndex="-1"
-        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow">
             {links}
       </ul>
     </div>
@@ -72,7 +72,7 @@ const Navbar = () => {
       {links}
     </ul>
   </div>
-  <div className="navbar-end gap-5">
+  <div className="navbar-end gap-2 md:gap-5">
     {
       !user ? (
         <button onClick={()=>navigate('/login')} className="btn">Login</button>

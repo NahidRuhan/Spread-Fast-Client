@@ -59,7 +59,7 @@ const AllParcels = () => {
     <div className="w-full space-y-8 min-h-screen">
       
       {/* Parcels at Hub Section */}
-      <div className="bg-white rounded-3xl p-8 w-full shadow-sm">
+      <div className="bg-white rounded-none md:rounded-3xl p-4 md:p-8 w-full shadow-sm">
         <div className="mb-6 border-b border-gray-100 pb-4">
           <h2 className="text-2xl font-bold text-[#0A2533] mb-2">Parcels at Hub & In Transit</h2>
           <p className="text-gray-500 font-medium">Manage parcels moving between origin and destination warehouses.</p>
@@ -140,7 +140,7 @@ const AllParcels = () => {
       </div>
 
       {/* All Parcels Section */}
-      <div className="bg-white rounded-3xl p-8 w-full shadow-sm">
+      <div className="bg-white rounded-none md:rounded-3xl p-4 md:p-8 w-full shadow-sm">
         <div className="mb-6 border-b border-gray-100 pb-4">
           <h1 className="text-2xl font-bold text-[#0A2533] mb-2">All Parcels</h1>
           <p className="text-gray-500 font-medium">

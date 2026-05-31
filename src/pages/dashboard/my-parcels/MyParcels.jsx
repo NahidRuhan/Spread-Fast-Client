@@ -62,7 +62,7 @@ const MyParcels = () => {
     // console.log("Used useEffect: ",parcels)
 
   return (
-    <div className="bg-white rounded-3xl p-8 shadow-sm">
+    <div className="bg-white rounded-none md:rounded-3xl p-4 md:p-8 shadow-sm">
       <h1 className="text-3xl font-bold text-[#0A2533] mb-6">My Parcels</h1>
       <p className="text-gray-600">Here you will see a list of all your booked parcels.</p>
       

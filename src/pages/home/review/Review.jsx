@@ -29,7 +29,7 @@ const Review = ({ reviewsPromise }) => {
             <rect x="120" y="55" width="20" height="25" />
           </svg>
         </div>
-        <h2 className="text-4xl font-extrabold text-[#0d3b3e] mb-4">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-[#0d3b3e] mb-4">
           What our customers are sayings
         </h2>
         <p className="text-[#8c9c9f] text-sm md:text-base px-8 leading-relaxed font-medium">
@@ -38,7 +38,7 @@ const Review = ({ reviewsPromise }) => {
       </div>
 
       {/* 2. Carousel Container - HEIGHT INCREASED HERE */}
-      <div className="relative w-full max-w-7xl h-112 flex justify-center mb-10 items-start pt-4">
+      <div className="relative w-full max-w-7xl h-96 md:h-112 flex justify-center mb-10 items-start pt-4">
         {reviews.map((review, index) => {
           let offset = index - activeIndex;
           const total = reviews.length;

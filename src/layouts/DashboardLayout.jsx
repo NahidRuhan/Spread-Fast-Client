@@ -33,7 +33,7 @@ const DashboardLayout = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          <div className="p-8">
+          <div className="p-0 md:p-8">
             <Outlet />
           </div>
         </div>

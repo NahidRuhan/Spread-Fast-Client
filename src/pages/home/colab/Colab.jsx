@@ -13,8 +13,8 @@ const brandLogo = [img1,img2,img3,img4,img5,img6,img7]
 
 const Colab = () => {
   return (
-    <div className="py-8 flex flex-col justify-center items-center gap-10">
-        <p className="font-extrabold text-3xl text-secondary">We've helped thousands of sales teams</p>
+    <div className="py-8 flex flex-col justify-center items-center gap-6 md:gap-10 overflow-hidden px-4 text-center">
+        <p className="font-extrabold text-2xl md:text-3xl text-secondary">We've helped thousands of sales teams</p>
       <Marquee speed={60}>
     {
         brandLogo.map((logo,idx)=><img key={idx} src={logo} alt="Amazon" className="mx-8 w-24 md:w-32 object-contain" />)

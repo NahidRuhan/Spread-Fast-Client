@@ -16,12 +16,12 @@ const Banner = () => {
       >
         <div className="relative">
           <img src={banner1} />
-          <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 flex gap-5">
-            <button className="bg-primary p-5 text-[#1f1f1f] py-4 px-8 rounded-full font-bold text-xl border hover:cursor-pointer">
+          <div className="absolute bottom-4 left-4 md:bottom-12 md:left-12 flex flex-row gap-2 md:gap-5">
+            <button className="bg-primary text-[#1f1f1f] py-1.5 px-3 md:py-3 md:px-6 rounded-full font-bold text-xs md:text-base border hover:cursor-pointer">
               Track your parcel
             </button>
             <Link to="/rider">
-              <button className=" text-[#1f1f1f] py-4 px-8 rounded-xl font-bold text-xl border bg-white hover:cursor-pointer">
+              <button className="text-[#1f1f1f] py-1.5 px-3 md:py-3 md:px-6 rounded-xl font-bold text-xs md:text-base border bg-white hover:cursor-pointer">
                 Be A Rider
               </button>
             </Link>
@@ -29,12 +29,12 @@ const Banner = () => {
         </div>
         <div className="relative">
           <img src={banner2} />
-          <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 flex gap-5">
-            <button className="bg-primary p-5 text-[#1f1f1f] py-4 px-8 rounded-full font-bold text-xl border hover:cursor-pointer">
+          <div className="absolute bottom-4 left-4 md:bottom-12 md:left-12 flex flex-row gap-2 md:gap-5">
+            <button className="bg-primary text-[#1f1f1f] py-1.5 px-3 md:py-3 md:px-6 rounded-full font-bold text-xs md:text-base border hover:cursor-pointer">
               Track your parcel
             </button>
             <Link to="/rider">
-              <button className=" text-[#1f1f1f] py-4 px-8 rounded-xl font-bold text-xl border bg-white hover:cursor-pointer">
+              <button className="text-[#1f1f1f] py-1.5 px-3 md:py-3 md:px-6 rounded-xl font-bold text-xs md:text-base border bg-white hover:cursor-pointer">
                 Be A Rider
               </button>
             </Link>
@@ -42,12 +42,12 @@ const Banner = () => {
         </div>
         <div className="relative">
           <img src={banner3} />
-          <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 flex gap-5">
-            <button className="bg-primary p-5 text-[#1f1f1f] py-4 px-8 rounded-full font-bold text-xl border hover:cursor-pointer">
+          <div className="absolute bottom-4 left-4 md:bottom-12 md:left-12 flex flex-row gap-2 md:gap-5">
+            <button className="bg-primary text-[#1f1f1f] py-1.5 px-3 md:py-3 md:px-6 rounded-full font-bold text-xs md:text-base border hover:cursor-pointer">
               Track your parcel
             </button>
             <Link to="/rider">
-              <button className=" text-[#1f1f1f] py-4 px-8 rounded-xl hover:cursor-pointer font-bold text-xl border bg-white">
+              <button className="text-[#1f1f1f] py-1.5 px-3 md:py-3 md:px-6 rounded-xl hover:cursor-pointer font-bold text-xs md:text-base border bg-white">
                 Be A Rider
               </button>
             </Link>

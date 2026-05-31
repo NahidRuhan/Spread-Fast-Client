@@ -30,11 +30,11 @@ const Payment = () => {
   }
 
   return (
-    <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm max-w-3xl mx-auto mt-4 border border-gray-50">
+    <div className="bg-white rounded-none md:rounded-3xl p-4 md:p-12 shadow-sm max-w-3xl mx-auto md:mt-4 border-0 md:border md:border-gray-50">
       <h1 className="text-3xl font-bold text-[#0A2533] mb-2">Checkout</h1>
       <p className="text-gray-500 mb-8">Review your parcel details and complete the payment.</p>
 
-      <div className="bg-gray-50 p-6 md:p-8 rounded-2xl border border-gray-100 mb-8">
+      <div className="bg-gray-50 p-4 md:p-8 rounded-2xl border border-gray-100 mb-8">
         <h2 className="text-xl font-semibold mb-6 text-slate-800 border-b border-gray-200 pb-4">Order Summary</h2>
         <div className="flex flex-col gap-3 text-sm md:text-base text-gray-600">
           <p className="flex justify-between"><span className="font-medium text-slate-800">Parcel Name:</span> <span>{parcel?.parcelName}</span></p>
@@ -51,7 +51,7 @@ const Payment = () => {
       </div>
 
       {/* Payment Action */}
-      <div className="bg-linear-to-br from-purple-600 to-indigo-600 border border-purple-500 p-10 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg shadow-purple-200/50">
+      <div className="bg-linear-to-br from-purple-600 to-indigo-600 border border-purple-500 p-6 md:p-10 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg shadow-purple-200/50">
         <p className="font-bold text-white mb-2 text-xl">Secure Checkout</p>
         <p className="text-sm text-purple-100 mb-6">You will be securely redirected to Stripe to complete your payment.</p>
         <button onClick={handlePayment} className="bg-primary text-[#0A2533] hover:bg-opacity-90 transition-colors hover:cursor-pointer font-bold py-3 px-10 rounded-xl w-full md:w-auto">

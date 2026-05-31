@@ -26,7 +26,7 @@ const PaymentSuccess = () => {
 
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm max-w-md w-full text-center border border-gray-50">
+      <div className="bg-white rounded-none md:rounded-3xl p-4 md:p-12 shadow-sm max-w-md w-full text-center border-0 md:border md:border-gray-50">
         
         {status === 'loading' && (
           <div className="flex flex-col items-center">

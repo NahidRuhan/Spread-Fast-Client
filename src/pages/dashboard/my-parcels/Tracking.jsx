@@ -27,7 +27,7 @@ const Tracking = () => {
 
   if (!parcel) {
     return (
-      <div className="bg-white rounded-3xl p-8 shadow-sm text-center">
+      <div className="bg-white rounded-none md:rounded-3xl p-4 md:p-8 shadow-sm text-center">
         <h2 className="text-2xl font-bold text-gray-800">Parcel Not Found</h2>
         <button onClick={() => navigate(-1)} className="mt-4 text-blue-500 hover:underline">Go Back</button>
       </div>
@@ -66,7 +66,7 @@ const Tracking = () => {
 
   return (
     <div className="w-full space-y-8 min-h-screen">
-      <div className="bg-white rounded-3xl p-8 shadow-sm">
+      <div className="bg-white rounded-none md:rounded-3xl p-4 md:p-8 shadow-sm">
         <div className="flex items-center gap-4 mb-6 border-b border-gray-100 pb-4">
           <button onClick={() => navigate(-1)} className="p-2 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-full transition-colors">
             <ArrowLeft size={20} />

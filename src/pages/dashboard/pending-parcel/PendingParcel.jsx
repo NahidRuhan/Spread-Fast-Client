@@ -107,7 +107,7 @@ const PendingParcel = () => {
   return (
     <div className="w-full space-y-8 min-h-screen">
       {/* Available Deliveries Section */}
-      <div className="bg-white rounded-3xl p-8 w-full shadow-sm">
+      <div className="bg-white rounded-none md:rounded-3xl p-4 md:p-8 w-full shadow-sm">
         <div className="mb-6 border-b border-gray-100 pb-4">
           <h1 className="text-2xl font-bold text-[#0A2533] mb-2">Available Deliveries</h1>
         <p className="text-gray-500 font-medium">
@@ -223,7 +223,7 @@ const PendingParcel = () => {
       </div>
 
       {/* My Accepted Deliveries Section */}
-      <div className="bg-white rounded-3xl p-8 w-full shadow-sm">
+      <div className="bg-white rounded-none md:rounded-3xl p-4 md:p-8 w-full shadow-sm">
         <div className="mb-6 border-b border-gray-100 pb-4">
           <h2 className="text-2xl font-bold text-[#0A2533] mb-2">My Accepted Deliveries</h2>
           <p className="text-gray-500 font-medium">

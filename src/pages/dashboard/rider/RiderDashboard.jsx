@@ -74,7 +74,7 @@ const RiderDashboard = () => {
   return (
     <div className="w-full space-y-8 min-h-screen">
       {/* Pending Requests Section */}
-      <div className="bg-white rounded-3xl p-8 w-full shadow-sm">
+      <div className="bg-white rounded-none md:rounded-3xl p-4 md:p-8 w-full shadow-sm">
         <div className="mb-6 border-b border-gray-100 pb-4">
           <h2 className="text-2xl font-bold text-[#0A2533] mb-2">Pending Requests</h2>
           <p className="text-gray-500 font-medium">Review and manage new rider applications here.</p>
@@ -142,7 +142,7 @@ const RiderDashboard = () => {
       </div>
 
       {/* All Riders Section */}
-      <div className="bg-white rounded-3xl p-8 w-full shadow-sm">
+      <div className="bg-white rounded-none md:rounded-3xl p-4 md:p-8 w-full shadow-sm">
         <div className="mb-6 border-b border-gray-100 pb-4">
           <h2 className="text-2xl font-bold text-[#0A2533] mb-2">All Riders</h2>
           <p className="text-gray-500 font-medium">Overview of all riders in the system.</p>

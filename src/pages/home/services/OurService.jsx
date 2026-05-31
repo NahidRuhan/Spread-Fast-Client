@@ -27,13 +27,13 @@ const OurService = () => {
   }
 ];
   return (
-    <div className="text-center items-center bg-secondary py-24 px-40 rounded-4xl space-y-5">
-        <p className="text-white font-extrabold text-[40px]">Our Services</p>
-        <p className="font-medium text-base text-white">Enjoy fast, reliable parcel delivery with real-time tracking and zero hassle. From personal packages to business shipments — we deliver on time, every time.</p>
-              <div className="grid grid-cols-3 gap-6">
+    <div className="text-center items-center bg-secondary py-12 px-6 md:py-24 md:px-20 lg:px-40 rounded-4xl space-y-5 mx-4 md:mx-0">
+        <p className="text-white font-extrabold text-3xl md:text-[40px]">Our Services</p>
+        <p className="font-medium text-sm md:text-base text-white">Enjoy fast, reliable parcel delivery with real-time tracking and zero hassle. From personal packages to business shipments — we deliver on time, every time.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {
                     data.map((data, index)=>
-                <div key={index} className='flex flex-col items-center p-8 text-black border rounded-4xl space-y-3 bg-white hover:bg-primary transition-colors duration-300 cursor-pointer'>
+                <div key={index} className='flex flex-col items-center p-6 md:p-8 text-black border rounded-4xl space-y-3 bg-white hover:bg-primary transition-colors duration-300 cursor-pointer'>
                     <img src={icon} alt="" />
                     <p className='font-bold text-xl'>{data.title}</p>
                     <p>{data.description}</p>
