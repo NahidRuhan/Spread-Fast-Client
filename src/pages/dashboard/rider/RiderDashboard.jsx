@@ -69,6 +69,7 @@ const RiderDashboard = () => {
   };
 
   const pendingRiders = riders.filter(r => r.status === 'pending' || !r.status);
+  const approvedRiders = riders.filter(r => r.status === 'approved');
 
   return (
     <div className="w-full space-y-8 min-h-screen">
@@ -163,8 +164,8 @@ const RiderDashboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {riders.length > 0 ? (
-                  riders.map((rider) => (
+                {approvedRiders.length > 0 ? (
+                  approvedRiders.map((rider) => (
                     <tr key={rider._id} className="hover:bg-gray-50 transition-colors duration-200">
                       <td 
                         className="p-4 cursor-pointer group" 
