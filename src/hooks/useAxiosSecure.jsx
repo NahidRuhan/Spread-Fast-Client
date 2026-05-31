@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: "https://spread-fast-server.vercel.app",
+  // baseURL: "http://localhost:8000",
 });
 
 const useAxiosSecure = () => {
