@@ -39,7 +39,7 @@ Whether it's same-city rapid delivery or nationwide distribution, Spread Fast ha
 
 ## 🛠️ Tech Stack
 
-### **Frontend (`zap-shift-client`)**
+### **Frontend (`spread-fast-client`)**
 - **React.js (Vite):** Fast, modern UI development.
 - **Tailwind CSS & DaisyUI:** Responsive, utility-first styling and beautiful pre-built components.
 - **React Router DOM:** Client-side routing, protected routes, and role-based access control.
@@ -47,7 +47,7 @@ Whether it's same-city rapid delivery or nationwide distribution, Spread Fast ha
 - **Firebase Authentication:** Secure social and email/password login.
 - **SweetAlert2 & Lucide React:** Interactive modals, alerts, and modern iconography.
 
-### **Backend (`zap-shift-server`)**
+### **Backend (`spread-fast-server`)**
 - **Node.js & Express.js:** Robust server and RESTful API infrastructure.
 - **MongoDB:** Flexible NoSQL database for handling parcels, users, riders, and payments.
 - **Stripe API:** Processing secure online payments and managing checkout sessions.
@@ -57,8 +57,8 @@ Whether it's same-city rapid delivery or nationwide distribution, Spread Fast ha
 
 ## 📁 Project Structure
 ```
-Zap-Shift/
-├── zap-shift-client/          # React Frontend (Vite)
+spread-fast/
+├── spread-fast-client/          # React Frontend (Vite)
 │   ├── public/                # Static assets
 │   ├── src/
 │   │   ├── assets/            # Images, SVGs
@@ -70,7 +70,7 @@ Zap-Shift/
 │   │   └── main.jsx           # App entry point
 │   └── firebase.json          # Firebase Hosting configuration
 │
-└── zap-shift-server/          # Node/Express Backend
+└── spread-fast-server/          # Node/Express Backend
     ├── middleware/            # JWT & Role-verification middlewares
     ├── index.js               # Main server and route definitions
     └── vercel.json            # Vercel Serverless configuration
@@ -90,16 +90,16 @@ Follow these steps to set up the project on your local machine.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/Zap-Shift.git
-cd Zap-Shift
+git clone https://github.com/your-username/spread-fast.git
+cd spread-fast
 ```
 
 ### 2. Set Up the Server
 ```bash
-cd zap-shift-server
+cd spread-fast-server
 npm install
 ```
-Create a `.env` file in the `zap-shift-server` root directory:
+Create a `.env` file in the `spread-fast-server` root directory:
 ```env
 PORT=3000
 MONGO_USERNAME=your_mongodb_username
@@ -114,10 +114,10 @@ npm run start
 
 ### 3. Set Up the Client
 ```bash
-cd ../zap-shift-client
+cd ../spread-fast-client
 npm install
 ```
-Create a `.env.local` file in the `zap-shift-client` root directory:
+Create a `.env.local` file in the `spread-fast-client` root directory:
 ```env
 VITE_apiKey=your_firebase_api_key
 VITE_authDomain=your_firebase_auth_domain
