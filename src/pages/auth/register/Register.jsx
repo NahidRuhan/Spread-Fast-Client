@@ -26,40 +26,44 @@ const Register = () => {
 
   const handleRegistration = async (data) => {
     try {
-      // 1. Upload image to ImgBB
-      const imageFile = data.profilePic[0];
-      const formData = new FormData();
-      formData.append("image", imageFile);
+      let photoURL = "";
 
-      const imgbbUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMAGE_HOST}`;
-      const imgRes = await axios.post(imgbbUrl, formData);
-      
-      if (imgRes.data.success) {
-        const photoURL = imgRes.data.data.display_url;
+      // 1. Upload image to ImgBB if provided
+      if (data.profilePic && data.profilePic.length > 0) {
+        const imageFile = data.profilePic[0];
+        const formData = new FormData();
+        formData.append("image", imageFile);
+
+        const imgbbUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMAGE_HOST}`;
+        const imgRes = await axios.post(imgbbUrl, formData);
         
-        // 2. Register user & update profile in Firebase
-        const userRes = await registerUser(data.email, data.password);
-        await updateUserProfile(data.name, photoURL);
-        console.log("User registered and profile updated!", userRes.user);
-        
-        // 3. Save user info to the database
-        const userInfo = {
-          name: data.name,
-          email: data.email,
-          image: photoURL
-        };
-        await axiosSecure.post("/users", userInfo);
-
-        Swal.fire({
-          icon: "success",
-          title: "Registration Successful",
-          text: "Your account has been created successfully.",
-          timer: 1500,
-          showConfirmButton: false
-        });
-
-        navigate(location?.state || '/');
+        if (imgRes.data.success) {
+          photoURL = imgRes.data.data.display_url;
+        }
       }
+      
+      // 2. Register user & update profile in Firebase
+      const userRes = await registerUser(data.email, data.password);
+      await updateUserProfile(data.name, photoURL);
+      console.log("User registered and profile updated!", userRes.user);
+      
+      // 3. Save user info to the database
+      const userInfo = {
+        name: data.name,
+        email: data.email,
+        image: photoURL
+      };
+      await axiosSecure.post("/users", userInfo);
+
+      Swal.fire({
+        icon: "success",
+        title: "Registration Successful",
+        text: "Your account has been created successfully.",
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      navigate(location?.state || '/');
     } catch (error) {
       console.error("Registration error:", error);
     }
@@ -90,10 +94,9 @@ const Register = () => {
             type="file" 
             id="profilePic"
             accept="image/*"
-            {...register('profilePic', { required: "Profile picture is required" })}
+            {...register('profilePic')}
             className="hidden"
           />
-          {errors.profilePic && <p className="text-red-500 text-xs mt-1">{errors.profilePic.message}</p>}
         </div>
 
         <div>

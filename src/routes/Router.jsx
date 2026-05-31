@@ -16,6 +16,9 @@ import PaymentSuccess from "../pages/dashboard/payment/PaymentSuccess";
 import PaymentCancelled from "../pages/dashboard/payment/PaymentCancelled";
 import PaymentHistory from "../pages/dashboard/payment-history/PaymentHistory";
 import RiderDashboard from "../pages/dashboard/rider/RiderDashboard";
+import UserManage from "../pages/dashboard/user-management/UserManage";
+import AdminRoute from "./AdminRoute";
+import AllParcels from "../pages/dashboard/all-parcel/AllParcels";
 
 export const router = createBrowserRouter([
   {
@@ -99,8 +102,28 @@ export const router = createBrowserRouter([
     children: [
       {
         index:true,
-        Component: RiderDashboard
+        element: <AdminRoute><RiderDashboard></RiderDashboard></AdminRoute>
       },
     ]
   },
+  {
+    path: 'manage-user',
+    element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    children: [
+      {
+        index:true,
+        element: <AdminRoute><UserManage></UserManage></AdminRoute>
+      },
+    ]
+  },
+  {
+    path: 'all-parcels',
+    element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    children: [
+      {
+        index:true,
+        element: <AdminRoute><AllParcels></AllParcels></AdminRoute>
+      },
+    ]
+  }
 ]);

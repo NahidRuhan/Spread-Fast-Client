@@ -74,7 +74,6 @@ const MyParcels = () => {
               <th className="p-4 font-semibold">Type</th>
               <th className="p-4 font-semibold">Receiver</th>
               <th className="p-4 font-semibold text-center">Destination</th>
-              <th className="p-4 font-semibold text-center">Weight</th>
               <th className="p-4 font-semibold text-center">Cost</th>
               <th className="p-4 font-semibold text-center">Delivery Status</th>
               <th className="p-4 font-semibold text-center">Payment</th>
@@ -86,11 +85,23 @@ const MyParcels = () => {
               parcels.map((parcel, index) => (
                 <tr key={parcel._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors text-sm">
                   <td className="p-4 text-gray-600 font-medium">{index + 1}</td>
-                  <td className="p-4 font-medium text-slate-800">{parcel.parcelName}</td>
-                  <td className="p-4 text-gray-600">{parcel.documentType}</td>
+                  <td className="p-4 font-medium text-slate-800">
+                    {parcel.parcelName}
+                    {parcel.trackingId && (
+                      <>
+                        <br />
+                        <span className="text-xs text-gray-400 font-normal tracking-wide">Tracking ID: {parcel.trackingId}</span>
+                      </>
+                    )}
+                  </td>
+                  <td className="p-4 text-gray-600">
+                    {parcel.documentType}
+                    {parcel.parcelWeight && (
+                      <><br /><span className="text-xs text-gray-400">{parcel.parcelWeight} kg</span></>
+                    )}
+                  </td>
                   <td className="p-4 text-gray-600">{parcel.receiverName} <br/><span className="text-xs text-gray-400">{parcel.receiverPhone}</span></td>
                   <td className="p-4 text-gray-600 text-center">{parcel.receiverDistrict}, {parcel.receiverRegion}</td>
-                  <td className="p-4 text-gray-600 text-center">{parcel.parcelWeight ? `${parcel.parcelWeight} kg` : 'N/A'}</td>
                   <td className="p-4 font-semibold text-green-600 text-center">৳ {parcel.deliveryCharge}</td>
                   <td className="p-4 text-center">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold inline-block ${
@@ -123,7 +134,7 @@ const MyParcels = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="10" className="p-8 text-center text-gray-500">No parcels found.</td>
+                <td colSpan="9" className="p-8 text-center text-gray-500">No parcels found.</td>
               </tr>
             )}
           </tbody>

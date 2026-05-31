@@ -1,10 +1,12 @@
 import { NavLink, useNavigate } from "react-router"
 import Logo from "../../../components/logo/Logo"
 import useAuth from "../../../hooks/useAuth"
+import useRole from "../../../hooks/useRole"
 
 const Navbar = () => {
   const navigate = useNavigate()
   const { user,signOutUser } = useAuth()
+  const { role } = useRole()
 
     const navLinkClass = ({ isActive }) => 
       isActive ? "bg-primary text-black font-semibold" : "";
@@ -50,10 +52,32 @@ const Navbar = () => {
   </div>
   <div className="navbar-end gap-5">
     {
-      !user ? <button onClick={()=>navigate('/login')} className="btn">Login</button>  :
-      <button onClick={handleLogout} className="btn">Log out</button>
+      !user ? (
+        <button onClick={()=>navigate('/login')} className="btn">Login</button>
+      ) : (
+        <div className="dropdown dropdown-end hover:cursor-pointer">
+          <div tabIndex={0} role="button" className="flex items-center gap-3 hover:bg-gray-50 p-1.5 pr-4 rounded-full border border-gray-100 transition-all shadow-sm">
+            <div className="avatar">
+              <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
+                <img src={user?.photoURL || 'https://i.ibb.co.com/0GS38PS/image.png'} alt={user?.displayName || 'User'} referrerPolicy="no-referrer" />
+              </div>
+            </div>
+            <div className="text-left hidden md:block">
+              <p className="font-bold text-sm text-[#0A2533] leading-tight">{user?.displayName}</p>
+              <p className="text-xs text-gray-500 capitalize font-medium">{role}</p>
+            </div>
+          </div>
+          <ul tabIndex={0} className="dropdown-content z-50 menu p-3 shadow-lg bg-white rounded-2xl w-56 mt-4 border border-gray-100 gap-1">
+            <div className="md:hidden border-b border-gray-100 pb-3 mb-2 px-2">
+              <p className="font-bold text-sm text-[#0A2533]">{user?.displayName}</p>
+              <p className="text-xs text-gray-500 capitalize">{role}</p>
+            </div>
+            <li><button onClick={() => navigate('/dashboard')} className="hover:bg-gray-50 font-medium text-gray-700">Dashboard</button></li>
+            <li><button onClick={handleLogout} className="text-red-500 hover:bg-red-50 font-medium mt-1">Logout</button></li>
+          </ul>
+        </div>
+      )
     }
-    <button onClick={()=>navigate('/rider')} className="btn bg-primary text-black">Be a Rider</button>
     
   </div>
 </div>
