@@ -61,6 +61,25 @@ Whether it's same-city rapid delivery or nationwide distribution, Spread Fast ha
 
 ---
 
+## 📦 Dependencies
+
+The frontend client relies on a robust ecosystem of modern React libraries and tools.
+
+### Core Dependencies
+- **Core Framework:** `react` (^19.2.6), `react-dom` (^19.2.6)
+- **Routing & Data Fetching:** `react-router` / `react-router-dom` (^7.15.1), `@tanstack/react-query` (^5.100.11), `axios` (^1.16.1)
+- **UI & Styling:** `tailwindcss` (^4.3.0), `@tailwindcss/vite` (^4.3.0)
+- **Icons & Feedback:** `lucide-react` (^1.16.0), `react-icons` (^5.6.0), `sweetalert2` (^11.26.25)
+- **Maps & Visuals:** `leaflet` (^1.9.4), `react-leaflet` (^5.0.0-rc.2), `react-fast-marquee` (^1.6.5), `react-responsive-carousel` (^3.2.23)
+- **Forms & Authentication:** `react-hook-form` (^7.76.0), `firebase` (^12.13.0)
+
+### Development Dependencies
+- **Build Tooling:** `vite` (^8.0.12), `@vitejs/plugin-react` (^6.0.1)
+- **UI Components:** `daisyui` (^5.5.19)
+- **Linting & Types:** `eslint` (^10.3.0), `@types/react` (^19.2.14), `@types/react-dom` (^19.2.3)
+
+---
+
 ## 📁 Project Structure
 ```
 spread-fast/
